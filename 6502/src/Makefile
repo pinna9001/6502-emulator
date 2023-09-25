@@ -1,6 +1,6 @@
 INCLUDE_PATH = ../include
 
-OBJS = memory.o cpu.o bus.o
+OBJS = memory.o cpu.o
 
 6502: $(OBJS)
 	ar rcs lib6502.a $(OBJS)
