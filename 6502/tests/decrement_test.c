@@ -14,7 +14,6 @@ void dec_zeropage() {
     memory.data[0x12] = 0x00;
     START_TESTCASE("decrement_zeropage negative");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 5);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -25,7 +24,6 @@ void dec_zeropage() {
     memory.data[0x12] = 0x1;
     START_TESTCASE("decrement_zeropage zero");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 5);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(get_status_flag(&cpu, ZERO_MASK));
@@ -36,7 +34,6 @@ void dec_zeropage() {
     memory.data[0x12] = 0x10;
     START_TESTCASE("decrement_zeropage positive");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 5);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -57,7 +54,6 @@ void dec_zeropage_x() {
     cpu.x_register = 0x2;
     START_TESTCASE("dec_zeropage_x negative");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 6);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -68,7 +64,6 @@ void dec_zeropage_x() {
     memory.data[0x12] = 0x1;
     START_TESTCASE("dec_zeropage_x zero");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 6);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(get_status_flag(&cpu, ZERO_MASK));
@@ -79,7 +74,6 @@ void dec_zeropage_x() {
     memory.data[0x12] = 0x13;
     START_TESTCASE("dec_zeropage_x positive");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 6);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -92,7 +86,6 @@ void dec_zeropage_x() {
     cpu.x_register = 0x20;
     START_TESTCASE("dec_zeropage_x wrap");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 6);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -113,7 +106,6 @@ void dec_absolute() {
     memory.data[0x2312] = 0x00;
     START_TESTCASE("decrement_absolute negative");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 6);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -124,7 +116,6 @@ void dec_absolute() {
     memory.data[0x2312] = 0x1;
     START_TESTCASE("decrement_absolute zero");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 6);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(get_status_flag(&cpu, ZERO_MASK));
@@ -135,7 +126,6 @@ void dec_absolute() {
     memory.data[0x2312] = 0x10;
     START_TESTCASE("decrement_absolute positive");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 6);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -157,7 +147,6 @@ void dec_absolute_x() {
     cpu.x_register = 0x2;
     START_TESTCASE("dec_absolute_x negative");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 7);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -168,7 +157,6 @@ void dec_absolute_x() {
     memory.data[0x2312] = 0x1;
     START_TESTCASE("dec_absolute_x zero");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 7);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(get_status_flag(&cpu, ZERO_MASK));
@@ -179,7 +167,6 @@ void dec_absolute_x() {
     memory.data[0x2312] = 0x13;
     START_TESTCASE("dec_absolute_x positive");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 7);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -193,7 +180,6 @@ void dec_absolute_x() {
     cpu.x_register = 0x10;
     START_TESTCASE("dec_absolute_x wrap");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 7);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -212,7 +198,6 @@ void dex() {
     cpu.x_register = 0x0;
     START_TESTCASE("dex negative");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 2);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -223,7 +208,6 @@ void dex() {
     cpu.x_register = 0x01;
     START_TESTCASE("dex zero");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 2);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(get_status_flag(&cpu, ZERO_MASK));
@@ -234,7 +218,6 @@ void dex() {
     cpu.x_register = 0x10;
     START_TESTCASE("dex positive");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 2);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -253,7 +236,6 @@ void dey() {
     cpu.y_register = 0x0;
     START_TESTCASE("dey negative");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 2);
     ASSERT(get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
@@ -264,7 +246,6 @@ void dey() {
     cpu.y_register = 0x01;
     START_TESTCASE("dey zero");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 2);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(get_status_flag(&cpu, ZERO_MASK));
@@ -275,7 +256,6 @@ void dey() {
     cpu.y_register = 0x10;
     START_TESTCASE("dey positive");
     cycles = process_instruction(&cpu);
-    printf("%d\n", cycles);
     ASSERT(cycles == 2);
     ASSERT(!get_status_flag(&cpu, NEGATIVE_MASK));
     ASSERT(!get_status_flag(&cpu, ZERO_MASK));
