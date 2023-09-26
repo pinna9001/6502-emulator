@@ -24,6 +24,10 @@ void decrement(int* cycles, cpu_t* cpu, word address);
 void add(int* cycles, cpu_t* cpu, byte value);
 void sub(int* cycles, cpu_t* cpu, byte value);
 
+void and (int* cycles, cpu_t* cpu, byte value);
+void eor(int* cycles, cpu_t* cpu, byte value);
+void or (int* cycles, cpu_t* cpu, byte value);
+
 void push_stack(int* cycles, cpu_t* cpu, byte value);
 byte pull_stack(int* cycles, cpu_t* cpu);
 
@@ -472,6 +476,147 @@ int process_instruction(cpu_t* cpu) {
             sub(&used_cycles, cpu, value);
             break;
         }
+        case AND_IMM: {
+            byte value = fetch_byte(&used_cycles, cpu);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case AND_ZPG: {
+            word address = zeropage_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case AND_ZPG_X: {
+            word address = zeropage_address_x(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case AND_ABS: {
+            word address = absolute_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case AND_ABS_X: {
+            word address = absolute_x_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case AND_ABS_Y: {
+            word address = absolute_y_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case AND_X_IND: {
+            word address = x_indirect_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case AND_IND_Y: {
+            word address = indirect_y_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            and(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_IMM: {
+            byte value = fetch_byte(&used_cycles, cpu);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_ZPG: {
+            word address = zeropage_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_ZPG_X: {
+            word address = zeropage_address_x(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_ABS: {
+            word address = absolute_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_ABS_X: {
+            word address = absolute_x_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_ABS_Y: {
+            word address = absolute_y_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_X_IND: {
+            word address = x_indirect_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case EOR_IND_Y: {
+            word address = indirect_y_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            eor(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_IMM: {
+            byte value = fetch_byte(&used_cycles, cpu);
+            or(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_ZPG: {
+            word address = zeropage_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            or(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_ZPG_X: {
+            word address = zeropage_address_x(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            or(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_ABS: {
+            word address = absolute_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            or(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_ABS_X: {
+            word address = absolute_x_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            or(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_ABS_Y: {
+            word address = absolute_y_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            or(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_X_IND: {
+            word address = x_indirect_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            or(&used_cycles, cpu, value);
+            break;
+        }
+        case ORA_IND_Y: {
+            word address = indirect_y_address(&used_cycles, cpu);
+            byte value = read_byte(&used_cycles, cpu, address);
+            or(&used_cycles, cpu, value);
+            break;
+        }
     }
     cpu->cycles += used_cycles;
     return used_cycles;
@@ -615,10 +760,28 @@ void add(int* cycles, cpu_t* cpu, byte value) {
     set_zero_flag(cpu, cpu->accumulator);
 }
 
-// the +1 for negating the value comes from the carry 
+// the +1 for negating the value comes from the carry
 // that has to be set by the programmer
 void sub(int* cycles, cpu_t* cpu, byte value) {
     add(cycles, cpu, ~value);
+}
+
+void and(int* cycles, cpu_t* cpu, byte value) {
+    cpu->accumulator = cpu->accumulator & value;
+    set_negative_flag(cpu, cpu->accumulator);
+    set_zero_flag(cpu, cpu->accumulator);
+}
+
+void eor(int* cycles, cpu_t* cpu, byte value) {
+    cpu->accumulator = cpu->accumulator ^ value;
+    set_negative_flag(cpu, cpu->accumulator);
+    set_zero_flag(cpu, cpu->accumulator);
+}
+
+void or(int* cycles, cpu_t* cpu, byte value) {
+    cpu->accumulator = cpu->accumulator | value;
+    set_negative_flag(cpu, cpu->accumulator);
+    set_zero_flag(cpu, cpu->accumulator);
 }
 
 void push_stack(int* cycles, cpu_t* cpu, byte value) {

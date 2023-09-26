@@ -98,7 +98,6 @@ typedef enum instructions_t {
     SBC_X_IND = 0xE1,
     SBC_IND_Y = 0xF1,
 
-// TODO add instructions to switch
     AND_IMM = 0x29,
     AND_ZPG = 0x25,
     AND_ZPG_X = 0x35,
@@ -126,6 +125,7 @@ typedef enum instructions_t {
     ORA_X_IND = 0x01,
     ORA_IND_Y = 0x11,
 
+// TODO add instructions to switch
     ASL_A = 0x0A,
     ASL_ZPG = 0x06,
     ASL_ZPG_X = 0x16,
