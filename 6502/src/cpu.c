@@ -21,8 +21,8 @@ void increment(int* cycles, cpu_t* cpu, word address);
 void decrement(int* cycles, cpu_t* cpu, word address);
 
 // TODO decimal mode to function or to extra function (enables/disables through instructions SED CLD)
-void add_carry(int* cycles, cpu_t* cpu, byte value);
-void sub_carry(int* cycles, cpu_t* cpu, byte value);
+void add(int* cycles, cpu_t* cpu, byte value);
+void sub(int* cycles, cpu_t* cpu, byte value);
 
 void push_stack(int* cycles, cpu_t* cpu, byte value);
 byte pull_stack(int* cycles, cpu_t* cpu);
@@ -380,96 +380,96 @@ int process_instruction(cpu_t* cpu) {
         }
         case ADC_IMM: {
             byte value = fetch_byte(&used_cycles, cpu);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case ADC_ZPG: {
             word address = zeropage_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case ADC_ZPG_X: {
             word address = zeropage_x_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case ADC_ABS: {
             word address = absolute_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case ADC_ABS_X: {
             word address = absolute_x_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case ADC_ABS_Y: {
             word address = absolute_y_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case ADC_X_IND: {
             word address = x_indirect_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case ADC_IND_Y: {
             word address = indirect_y_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            add_carry(&used_cycles, cpu, value);
+            add(&used_cycles, cpu, value);
             break;
         }
         case SBC_IMM: {
             byte value = fetch_byte(&used_cycles, cpu);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
         case SBC_ZPG: {
             word address = zeropage_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
         case SBC_ZPG_X: {
             word address = zeropage_x_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
         case SBC_ABS: {
             word address = absolute_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
         case SBC_ABS_X: {
             word address = absolute_x_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
         case SBC_ABS_Y: {
             word address = absolute_y_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
         case SBC_X_IND: {
             word address = x_indirect_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
         case SBC_IND_Y: {
             word address = indirect_y_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
-            sub_carry(&used_cycles, cpu, value);
+            sub(&used_cycles, cpu, value);
             break;
         }
     }
@@ -591,17 +591,18 @@ void decrement(int* cycles, cpu_t* cpu, word address) {
     write_byte(cycles, cpu, address, data);
 }
 
-void add_carry(int* cycles, cpu_t* cpu, byte value) {
-    byte result = cpu->accumulator;
+void add(int* cycles, cpu_t* cpu, byte value) {
+    word result = cpu->accumulator;
     bool same_sign_operands = (cpu->accumulator & 0x80) ^ (value & 0x80) == 0;
     result += value;
     result += (get_status_flag(cpu, CARRY_MASK) ? 1 : 0);
 
-    if (result < value || result < cpu->accumulator) {
+    if (result > 0xFF) {
         set_carry_flag(cpu);
     } else {
         clear_carry_flag(cpu);
     }
+
     if (same_sign_operands) {
         if ((value & 0x80) ^ (result & 0x80) != 0) {  // different signs of result and operands
             set_overflow_flag(cpu);
@@ -609,13 +610,15 @@ void add_carry(int* cycles, cpu_t* cpu, byte value) {
             clear_overflow_flag(cpu);
         }
     }
-    cpu->accumulator = result;
+    cpu->accumulator = (byte)(result & 0xFF);
     set_negative_flag(cpu, cpu->accumulator);
     set_zero_flag(cpu, cpu->accumulator);
 }
 
-void sub_carry(int* cycles, cpu_t* cpu, byte value) {
-    add_carry(cycles, cpu, ~value);
+// the +1 for negating the value comes from the carry 
+// that has to be set by the programmer
+void sub(int* cycles, cpu_t* cpu, byte value) {
+    add(cycles, cpu, ~value);
 }
 
 void push_stack(int* cycles, cpu_t* cpu, byte value) {
