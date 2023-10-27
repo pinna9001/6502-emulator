@@ -1,0 +1,7 @@
+steps:
+  build:
+    image: debian
+    commands: make main
+  tests:
+    image: debian
+    commands: make tests
