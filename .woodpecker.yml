@@ -1,9 +1,7 @@
 steps:
   build:
     image: gcc
-    group: build
     commands: make main
   tests:
     image: gcc
-    group: build
     commands: make tests
