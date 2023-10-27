@@ -1,7 +1,7 @@
 steps:
   build:
-    image: debian
+    image: gcc
     commands: make main
   tests:
-    image: debian
+    image: gcc
     commands: make tests
