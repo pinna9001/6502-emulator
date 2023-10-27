@@ -28,6 +28,13 @@ void and (int* cycles, cpu_t* cpu, byte value);
 void eor(int* cycles, cpu_t* cpu, byte value);
 void or (int* cycles, cpu_t* cpu, byte value);
 
+byte aritmetic_shift_left(int* cycles, cpu_t* cpu, byte value);
+byte logical_shift_right(int* cycles, cpu_t* cpu, byte value);
+byte rotate_left(int* cycles, cpu_t* cpu, byte value);
+byte rotate_right(int* cycles, cpu_t* cpu, byte value);
+
+void compare(int* cycles, cpu_t* cpu, byte op1, byte op2);
+
 void push_stack(int* cycles, cpu_t* cpu, byte value);
 byte pull_stack(int* cycles, cpu_t* cpu);
 
@@ -35,6 +42,10 @@ void set_carry_flag(cpu_t* cpu);
 void clear_carry_flag(cpu_t* cpu);
 void set_overflow_flag(cpu_t* cpu);
 void clear_overflow_flag(cpu_t* cpu);
+void set_decimal_flag(cpu_t* cpu);
+void clear_decimal_flag(cpu_t* cpu);
+void set_interrupt_disable_flag(cpu_t* cpu);
+void clear_interrupt_disable_flag(cpu_t* cpu);
 void set_negative_flag(cpu_t* cpu, byte value);
 void set_zero_flag(cpu_t* cpu, byte value);
 
@@ -488,7 +499,7 @@ int process_instruction(cpu_t* cpu) {
             break;
         }
         case AND_ZPG_X: {
-            word address = zeropage_address_x(&used_cycles, cpu);
+            word address = zeropage_x_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
             and(&used_cycles, cpu, value);
             break;
@@ -535,7 +546,7 @@ int process_instruction(cpu_t* cpu) {
             break;
         }
         case EOR_ZPG_X: {
-            word address = zeropage_address_x(&used_cycles, cpu);
+            word address = zeropage_x_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
             eor(&used_cycles, cpu, value);
             break;
@@ -582,7 +593,7 @@ int process_instruction(cpu_t* cpu) {
             break;
         }
         case ORA_ZPG_X: {
-            word address = zeropage_address_x(&used_cycles, cpu);
+            word address = zeropage_x_address(&used_cycles, cpu);
             byte value = read_byte(&used_cycles, cpu, address);
             or(&used_cycles, cpu, value);
             break;
@@ -782,6 +793,66 @@ void or(int* cycles, cpu_t* cpu, byte value) {
     cpu->accumulator = cpu->accumulator | value;
     set_negative_flag(cpu, cpu->accumulator);
     set_zero_flag(cpu, cpu->accumulator);
+}
+
+byte aritmetic_shift_left(int* cycles, cpu_t* cpu, byte value) {
+    if ((value & NEGATIVE_MASK) != 0) {
+        set_carry_flag(cpu);
+    } else {
+        clear_carry_flag(cpu);
+    }
+    byte result = (value << 1) & 0xFE;
+    set_negative_flag(cpu, result);
+    set_zero_flag(cpu, result);
+    (*cycles)++;
+    return result;
+}
+
+byte logical_shift_right(int* cycles, cpu_t* cpu, byte value) {
+    if ((value & 0x01) != 0) {
+        set_carry_flag(cpu);
+    } else {
+        clear_carry_flag(cpu);
+    }
+    byte result = (value >> 1) & 0x7F;
+    set_negative_flag(cpu, result);
+    set_zero_flag(cpu, result);
+    (*cycles)++;
+    return result;
+}
+
+byte rotate_left(int* cycles, cpu_t* cpu, byte value) {
+    bool set_carry = (value & NEGATIVE_MASK) != 0;
+    byte result = (value << 1) & 0xFE;
+    result |= (get_status_flag(cpu, CARRY_MASK) ? 0x1 : 0x0);
+    if (set_carry) {
+        set_carry_flag(cpu);
+    } else {
+        clear_carry_flag(cpu);
+    }
+    set_negative_flag(cpu, result);
+    set_zero_flag(cpu, result);
+    (*cycles)++;
+    return result;
+}
+
+byte rotate_right(int* cycles, cpu_t* cpu, byte value) {
+    bool set_carry = (value & 0x1) != 0;
+    byte result = (value << 1) & 0xFE;
+    result |= (get_status_flag(cpu, CARRY_MASK) ? 0x80 : 0x00);
+    if (set_carry) {
+        set_carry_flag(cpu);
+    } else {
+        clear_carry_flag(cpu);
+    }
+    set_negative_flag(cpu, result);
+    set_zero_flag(cpu, result);
+    (*cycles)++;
+    return result;
+}
+
+void compare(int* cycles, cpu_t* cpu, byte op1, byte op2) {
+    
 }
 
 void push_stack(int* cycles, cpu_t* cpu, byte value) {
