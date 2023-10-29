@@ -1,8 +1,9 @@
 INCLUDE_PATH = ../include
 LIB_PATH = ../src
 
+.PHONY: 6502
 6502:
-	cd ../src && make
+	cd ../src && make 6502
 
 run_%_test: %_test
 	./$<

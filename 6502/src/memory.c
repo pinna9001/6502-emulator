@@ -1,11 +1,38 @@
 #include "6502/memory.h"
 
+#include <stdbool.h>
 #include <stdio.h>
 
 void init_memory(memory_t* memory) {
     for (int i = 0; i < sizeof(memory->data); i++) {
         memory->data[i] = 0;
     }
+}
+
+long get_file_size(FILE* file) {
+    fseek(file, 0L, SEEK_END);
+    long file_size = ftell(file);
+    fseek(file, 0L, SEEK_SET);
+    return file_size;
+}
+
+bool load_memory(memory_t* memory, char* filepath, word start_address) {
+    FILE* file = fopen(filepath, "rb");
+    if (file == NULL) {
+        char error_msg[300];
+        sprintf(error_msg, "Couldn't open file %s", filepath);
+        perror(error_msg);
+        return false;
+    }
+    long file_size = get_file_size(file);
+    size_t written = fread(&memory->data[start_address], sizeof(byte), file_size, file);
+    fclose(file);
+    if (written != file_size)
+    {
+        perror("Didn't read all the bytes from the file");
+        return false;
+    }
+    return true;
 }
 
 byte read_memory(memory_t* memory, word address) {

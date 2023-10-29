@@ -1,6 +1,6 @@
 .PHONY: 6502
 6502:
-	cd ./6502/src && make
+	cd ./6502/src && make 6502
 
 main: 6502
 	gcc -o main main.c -I6502/include -L 6502/src -l 6502
