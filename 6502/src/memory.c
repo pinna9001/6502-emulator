@@ -43,11 +43,10 @@ void write_memory(memory_t* memory, word address, byte value) {
     memory->data[address] = value;
 }
 
-// TODO use end address instead of number_of_bytes
-void print_memory(memory_t* memory, word start_address, word number_of_bytes) {
+void print_memory(memory_t* memory, word start_address, word end_address) {
     int prefix = start_address % 16;
-    int postfix = (16 - (start_address + number_of_bytes) % 16) % 16;
-    int number_of_rows = (number_of_bytes + prefix + postfix) / 16;
+    int postfix = (16 - (end_address + 1) % 16) % 16;
+    int number_of_rows = (end_address - start_address + prefix + postfix + 1) / 16;
     start_address = start_address - prefix;
     for (int i = 0; i < number_of_rows; i++) {
         word row_address = start_address + i * 16;

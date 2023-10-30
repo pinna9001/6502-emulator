@@ -10,10 +10,9 @@ typedef struct memory_t {
 } memory_t;
 
 void init_memory(memory_t* memory);
-// TODO load memory
 bool load_memory(memory_t* memory, char* filepath, word start_address);
 byte read_memory(memory_t* memory, word address);
 void write_memory(memory_t* memory, word address, byte value);
-void print_memory(memory_t* memory, word start_address, word number_of_bytes);
+void print_memory(memory_t* memory, word start_address, word end_address);
 
 #endif  // RAM_H
