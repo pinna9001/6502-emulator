@@ -1,4 +1,4 @@
-tests=(memory lda ldx ldy sta stx sty transfer stack decrement increment)
+tests=(memory lda ldx ldy sta stx sty transfer stack decrement increment adc)
 
 for test in "${tests[@]}"
 do
