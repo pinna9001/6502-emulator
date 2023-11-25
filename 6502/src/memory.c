@@ -1,5 +1,7 @@
 #include "6502/memory.h"
 
+#include "6502/common.h"
+
 #include <stdbool.h>
 #include <stdio.h>
 
@@ -25,9 +27,9 @@ bool load_memory(memory_t* memory, char* filepath, word start_address) {
         return false;
     }
     long file_size = get_file_size(file);
-    size_t written = fread(&memory->data[start_address], sizeof(byte), file_size, file);
+    size_t bytes_read = fread(&memory->data[start_address], sizeof(byte), file_size, file);
     fclose(file);
-    if (written != file_size)
+    if (bytes_read != file_size)
     {
         perror("Didn't read all the bytes from the file");
         return false;

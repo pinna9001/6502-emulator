@@ -1,9 +1,9 @@
 #ifndef RAM_H
 #define RAM_H
 
-#include <stdbool.h>
-
 #include "6502/common.h"
+
+#include <stdbool.h>
 
 typedef struct memory_t {
     byte data[0x10000];

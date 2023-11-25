@@ -11,10 +11,13 @@ int main() {
     init_memory(&memory);
     reset(&cpu, &memory);
     cpu.status |= CARRY_MASK;
-    cpu.accumulator = 0x40;
-    memory.data[0] = SBC_IMM;
-    memory.data[1] = 0x40;
+    cpu.accumulator = 0x00;
+    memory.data[0] = LDA_IMM;
+    memory.data[1] = 0xFF;
+    memory.data[2] = STA_ZPG;
+    memory.data[3] = 0x33;
     int cycles = process_instruction(&cpu);
+    cycles += process_instruction(&cpu);
     printf("Akkumulator: %x\n", cpu.accumulator);
     printf("Status: %x\n", cpu.status);
     printf("Cycles: %d\n", cycles);

@@ -1,11 +1,11 @@
 #ifndef CPU_H
 #define CPU_H
 
-#include <stdbool.h>
-#include <stdint.h>
-
 #include "6502/common.h"
 #include "6502/memory.h"
+
+#include <stdbool.h>
+#include <stdint.h>
 
 #define CARRY_MASK (byte)(1 << 0)
 #define ZERO_MASK (byte)(1 << 1)

@@ -1,9 +1,9 @@
 #include "6502/cpu.h"
 
-#include <stdio.h>
-
 #include "6502/common.h"
 #include "6502/memory.h"
+
+#include <stdio.h>
 
 word zeropage_address(int* cycles, cpu_t* cpu);
 word zeropage_x_address(int* cycles, cpu_t* cpu);
@@ -628,6 +628,10 @@ int process_instruction(cpu_t* cpu) {
             or(&used_cycles, cpu, value);
             break;
         }
+
+        default:
+            perror("Unknown instruction.");
+            return -1;
     }
     cpu->cycles += used_cycles;
     return used_cycles;
