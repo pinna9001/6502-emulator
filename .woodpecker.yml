@@ -1,11 +1,10 @@
+labels:
+  backend: docker
+
 steps:
   build:
     image: gcc
     commands: make main
-    when:
-      - platform: linux/*
   tests:
     image: gcc
     commands: make tests
-    when:
-      - platform: linux/*
